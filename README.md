@@ -1,0 +1,2 @@
+# Blueprint
+Debugging made easier
