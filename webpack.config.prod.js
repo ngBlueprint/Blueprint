@@ -5,11 +5,11 @@ const extpath = path.join(__dirname, './chrome/extension/');
 
 module.exports = {
   entry: {
-    background: [ `${extpath}background` ],
-    devpanel: [ `${extpath}devpanel` ],
-    devtools: [ `${extpath}devtools` ],
-    content: [ `${extpath}content` ],
-    page: [ `${extpath}page` ],
+    background: [`${extpath}background`],
+    devpanel: [`${extpath}devpanel`],
+    devtools: [`${extpath}devtools`],
+    content: [`${extpath}content`],
+    page: [`${extpath}page`],
   },
   output: {
     path: path.join(__dirname, 'build'),

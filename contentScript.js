@@ -1,4 +1,4 @@
-window.addEventListener('message', function(event) {
+window.addEventListener('message', function (event) {
   // Only accept messages from the same frame
   if (event.source !== window) {
     return;
@@ -8,7 +8,7 @@ window.addEventListener('message', function(event) {
 
   // Only accept messages that we know are ours
   if (typeof message !== 'object' || message === null ||
-      !message.source === 'react-rpm-module') {
+    !message.source === 'react-rpm-module') {
     return;
   }
 

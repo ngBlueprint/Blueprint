@@ -22,7 +22,7 @@ let app = express();
 
 new WebpackDevServer(webpack(config), {
   headers: {
-      "Access-Control-Allow-Origin": "*"
+    "Access-Control-Allow-Origin": "*"
   },
   publicPath: config.output.publicPath,
   hot: true,
