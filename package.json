@@ -1,5 +1,5 @@
 {
-  "name": "react-rpm",
+  "name": "blueprint",
   "version": "0.1.0",
   "description": "A Performance Visualization Tool for Optimization and Debugging",
   "scripts": {
@@ -8,14 +8,7 @@
     "test": "mocha --compilers js:babel-core/register app/**/*.test.js",
     "webpack": "./node_modules/.bin/webpack -w"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/react-rpm/react-rpm.git"
-  },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/react-rpm/react-rpm/issues"
-  },
   "dependencies": {
     "babel-polyfill": "^6.7.2",
     "css-loader": "^0.23.1",

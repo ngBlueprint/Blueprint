@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom'
 import MainComponent from './mainComponent.js'
+import SubComponent from './subComponent.js'
 
 class Main extends Component {
     constructor(props){
@@ -29,9 +30,6 @@ handleClick(e){
   }
 }
 
-const pstyle = {
-    color: 'red'
-};
 
 
 export default Main;
