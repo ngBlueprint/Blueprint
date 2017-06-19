@@ -1,6 +1,24 @@
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config.dev');
+const webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const config = require('./webpack.config.dev');
+const express = require('express')
+const http = require('http')
+let app = express();
+
+
+// let options = {
+//     host: '110.10',
+//     path: '/',
+//     port: '4444',
+//     method: 'POST'
+// }
+
+// app.post('/update', function(req, res){
+//     let res = http.request(options, function (response){
+//         console.log('sending data')
+//     })
+// })
+
 
 new WebpackDevServer(webpack(config), {
   headers: {
