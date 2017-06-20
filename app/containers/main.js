@@ -16,27 +16,27 @@ class Main extends Component {
         heroesComponent: [
           {
             selectedHero: "Windstorm",
-            heroes: ["Windstorm", "Hello", "World"],
+            heroes: ["Windstorm", "Mr. Nice", "Narco", "Bombasto", "Celeritas", "Magneta", "RubberMan", "Dynama", "Dr IQ", "Magma", "Tornado"],
             heroService: "heroService function",
           },
           {
-            selectedHero: "World",
-            heroes: ["Windstorm", "Hello", "World"],
+            selectedHero: "Narco",
+            heroes: ["Windstorm", "Mr. Nice", "Narco", "Bombasto", "Celeritas", "Magneta", "RubberMan", "Dynama", "Dr IQ", "Magma", "Tornado"],
             heroService: "heroService function",
           },
           {
-            selectedHero: "Hello",
-            heroes: ["Windstorm", "Hello", "World"],
+            selectedHero: "Magneta",
+            heroes: ["Windstorm", "Mr. Nice", "Narco", "Bombasto", "Celeritas", "Magneta", "RubberMan", "Dynama", "Dr IQ", "Magma", "Tornado"],
             heroService: "heroService function",
           },
           {
-            selectedHero: "World",
-            heroes: ["Windstorm", "Hello", "World"],
+            selectedHero: "Dr IQ",
+            heroes: ["Windstorm", "Mr. Nice", "Narco", "Bombasto", "Celeritas", "Magneta", "RubberMan", "Dynama", "Dr IQ", "Magma", "Tornado"],
             heroService: "heroService function",
           },
           {
             selectedHero: "Windstorm",
-            heroes: ["Windstorm", "Hello", "World"],
+            heroes: ["Windstorm", "Mr. Nice", "Narco", "Bombasto", "Celeritas", "Magneta", "RubberMan", "Dynama", "Dr IQ", "Magma", "Tornado"],
             heroService: "heroService function",
           }
         ],
@@ -80,7 +80,7 @@ class Main extends Component {
 
     return (
       <div>
-        <MainComponent handleClick={this.handleClick} selectedComponent={this.state.selectedComponent} componentList={this.state.componentList} data={this.state.data}/>
+        <MainComponent handleClick={this.handleClick} selectedComponent={this.state.selectedComponent} componentList={this.state.componentList} data={this.state.data} />
       </div>
     );
   }

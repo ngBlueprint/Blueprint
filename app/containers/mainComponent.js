@@ -20,7 +20,8 @@ class MainComponent extends Component {
       <div style={styles.splitPane}>
         <div style={styles.splitPaneLeft}>
           <h1>Component List</h1>
-          <br />
+          <hr />
+          <hr />
           <br />
           {compsCollection}
         </div>
@@ -36,17 +37,28 @@ const styles = {
   splitPane: {
     width: '100%',
     height: '100%',
-    background: 'green'
+    minHeight: '700px',
+    background: ''
   },
   splitPaneLeft: {
+    display: 'block',
     float: 'left',
-    width: '40%',
-    height: '100%'
+    width: '25%',
+    height: '100%',
+    minHeight: '700px',
+    background: '#FFFFFF',
+    border: '3px solid #DDDDDD',
+    paddingLeft: '10px'
   },
   splitPaneRight: {
+    display: 'block',
     float: 'left',
-    width: '60%',
-    height: '100%'
+    width: '70%',
+    height: '100%',
+    minHeight: '700px',
+    background: '#FFFFFFF',
+    border: '3px solid #DDDDDD',
+    paddingLeft: '10px'
   },
 };
 
