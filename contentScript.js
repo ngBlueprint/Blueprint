@@ -11,7 +11,7 @@ window.addEventListener('message', function(event) {
   if (typeof message !== 'object' || message === null) {
     return;
   }
-  alert(JSON.stringify(message))
+  // alert(JSON.stringify(message))
   chrome.runtime.sendMessage(message);
  
 });
