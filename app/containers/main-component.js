@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import SubComponent from './subComponent.js'
+import SubComponent from './sub-component.js'
 
 
 

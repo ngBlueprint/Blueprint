@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom'
-import MainComponent from './mainComponent.js'
-import SubComponent from './subComponent.js'
+import MainComponent from './main-component.js'
+import SubComponent from './sub-component.js'
 import axios from 'axios';
 
 class Main extends Component {
   constructor(props) {
     super(props)
-    this.handleClick = this.handleClick.bind(this)
+    this.handleClick = this.handleClick.bind(this);
+    this.listenForPerfs();
 
     this.state = {
       selectedComponent: "",
@@ -65,6 +66,20 @@ class Main extends Component {
         ]
       },
     }
+  }
+
+  listenForPerfs() {
+    // const WEB_REQUEST = chrome.webRequest;
+
+    // WEB_REQUEST.onBeforeRequest.addListener(
+    //   function (details) {
+    //     this.state.heroesComponent = [];
+    //     if (details.method == "POST")
+    //       this.state.heroesComponent = [];
+    //   },
+    //   { urls: ["<all_urls>"] },
+    //   ["message"]
+    // );
   }
 
   handleClick(e) {

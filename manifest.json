@@ -11,11 +11,11 @@
         "https://www.google*"
       ],
       "js": [
-        "contentScript.js"
+        "content-script.js"
       ]
     }
   ],
-  "content_security_policy": "'default-src': 'self'; script-src 'self' http://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 ws://localhost:3000; style-src * 'unsafe-inline' http://localhost:3000 data: blob:; img-src 'self' http://localhost:3000; font-src 'self' data:",
+  "content_security_policy": "",
   "background": {
     "scripts": [
       "background.js"

@@ -1,4 +1,4 @@
-chrome.devtools.panels.create('Blueprint',
+chrome.devtools.panels.create('blueprint',
   null,
   'devpanel.html',
   () => {
