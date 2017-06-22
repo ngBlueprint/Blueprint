@@ -35,10 +35,10 @@ chrome.runtime.onConnect.addListener(function (port) {
 // current tab
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  // alert(JSON.stringify(sender))
   console.log('Request received:', request,
     'sending to devpanel'
   );
+
   // Messages from content scripts should have sender.tab set
   if (sender.tab) {
     var tabId = sender.tab.id;
@@ -50,6 +50,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   } else {
     console.log("sender.tab not defined.");
   }
-  console.log("hello world");
   return true;
 });
+
