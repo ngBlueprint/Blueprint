@@ -33,7 +33,9 @@ chrome.runtime.onConnect.addListener(function (port) {
 
 // Receive message from content script and relay to the devTools page for the
 // current tab
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // alert(JSON.stringify(sender))
   console.log('Request received:', request,
     'sending to devpanel'
   );
@@ -48,5 +50,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   } else {
     console.log("sender.tab not defined.");
   }
+  console.log("hello world");
   return true;
 });
