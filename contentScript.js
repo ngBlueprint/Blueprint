@@ -4,13 +4,14 @@ window.addEventListener('message', function(event) {
     return;
   }
 
+
   var message = event.data;
 
   // Only accept messages that we know are ours
-  if (typeof message !== 'object' || message === null ||
-      !message.source === 'react-rpm-module') {
+  if (typeof message !== 'object' || message === null) {
     return;
   }
-
+  alert(JSON.stringify(message))
   chrome.runtime.sendMessage(message);
+ 
 });

@@ -4,12 +4,14 @@
   "description": "A Performance Visualization Tool for Optimization and Debugging",
   "scripts": {
     "dev": "NODE_ENV=development && node server.js",
+    "server": "nodemon nodeServer.js",
     "build": "NODE_ENV=production node scripts/build",
     "test": "mocha --compilers js:babel-core/register app/**/*.test.js",
     "webpack": "./node_modules/.bin/webpack -w"
   },
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-polyfill": "^6.7.2",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",

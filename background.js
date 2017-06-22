@@ -1,7 +1,7 @@
 var connections = {};
 
 chrome.runtime.onConnect.addListener(function (port) {
-    console.log('bg listening for messages');
+    // console.log('bg listening for messages');
     var extensionListener = function (message, sender, sendResponse) {
 
         // The original connection event doesn't include the tab ID of the
