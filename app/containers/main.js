@@ -10,6 +10,7 @@ class Main extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.onConnect = this.onConnect.bind(this)
 
+
     this.state = {
       selectedComponent: "",
       componentList: [],
@@ -78,6 +79,7 @@ class Main extends Component {
         });
     };
 
+
   listenForPerfs() {
     // create a connection to the background page
     const backgroundPageConnection = chrome.runtime.connect({
@@ -93,13 +95,9 @@ class Main extends Component {
     backgroundPageConnection.onMessage.addListener(this.onConnect)
   }
 
-  handleClick(e) {
-    console.log(e)
-    this.setState({ selectedComponent: e.target.value })
-  }
 
-  handleData() {
-    axios.post('/update');
+  handleClick(e) {
+    this.setState({ selectedComponent: e.target.value })
   }
 
   render() {

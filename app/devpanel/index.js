@@ -12,7 +12,7 @@ const Container = () => (
     <Main />
   </AppContainer>
 );
-console.log("IN DEVPANEL INDEX.JS")
+
 render(
   <Container />
 , document.getElementById('root')
