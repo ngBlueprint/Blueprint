@@ -8,11 +8,12 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this);
-    this.listenForPerfs();
+    this.onConnect = this.onConnect.bind(this)
 
     this.state = {
       selectedComponent: "",
       componentList: [],
+      perfData: {},
       data: {
         heroesComponent: [
           {
@@ -66,20 +67,30 @@ class Main extends Component {
         ]
       },
     }
-  }
+  this.listenForPerfs();
+}
+
+  onConnect(message) {
+        // this.haveReceivedPerfs = true;
+        // this.hasRenderBeenDetected = styles.renderDetected;
+        this.setState({ data: message }, function(){
+          alert(JSON.stringify(this.state.data))
+        });
+    };
 
   listenForPerfs() {
-    // const WEB_REQUEST = chrome.webRequest;
+    // create a connection to the background page
+    const backgroundPageConnection = chrome.runtime.connect({
+      name: 'panel',
+    });
+    backgroundPageConnection.postMessage({
+      name: 'init',
+      tabId: chrome.devtools.inspectedWindow.tabId,
+    });
+    alert('in react main.js!!')
 
-    // WEB_REQUEST.onBeforeRequest.addListener(
-    //   function (details) {
-    //     this.state.heroesComponent = [];
-    //     if (details.method == "POST")
-    //       this.state.heroesComponent = [];
-    //   },
-    //   { urls: ["<all_urls>"] },
-    //   ["message"]
-    // );
+    // 
+    backgroundPageConnection.onMessage.addListener(this.onConnect)
   }
 
   handleClick(e) {
