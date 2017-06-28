@@ -8,34 +8,6 @@ class ObjectExplorerComponent extends Component {
   }
 
   render() {
-    const styles = {
-      root: {
-        // 'display': 'inline-block',
-        // 'border': 'solid red 1px'
-      },
-      propItem: {
-        'padding-left': '16px',
-        // 'border': 'solid 1px green'
-      }
-    }
-    // const propVal = (key) => {
-    //   if (Array.isArray(data[key]))
-    //     return processArray(data[key]);
-    //   else if (typeof data[key] === 'object')
-    //     return <ObjectExplorerComponent data={data[key]} />
-    //   else
-    //     return JSON.stringify(data[key])
-    // }
-
-    const processArray = (array) => {
-      const output = array.map((ele) =>
-        <div style={styles.propItem}>
-          {ele}
-        </div>
-      );
-      return '[' + output + ']';
-    }
-
     const { data } = this.props;
     const props = [];
 
@@ -48,11 +20,10 @@ class ObjectExplorerComponent extends Component {
     )
 
     return (
-      <span style={styles.root}>
-        {/*{JSON.stringify(data)}*/}
-        {Array.isArray(data) ? "[" : "{"}
-        {propItems ? propItems : null}
-        {Array.isArray(data) ? "]" : "}"}
+      <span>
+        { Array.isArray(data) ? "[" : "{" }
+        { propItems ? propItems : null }
+        { Array.isArray(data) ? "]" : "}" }
       </span>
     )
   }

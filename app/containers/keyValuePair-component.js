@@ -17,6 +17,7 @@ class KeyValuePairComponent extends Component {
 
   render() {
     const { keyPair, value } = this.props;
+
     const procVal = (val) => {
       if (Array.isArray(val)){
         return this.state.isExpanded ? <ObjectExplorerComponent data={val} /> : '[ ... ]'
