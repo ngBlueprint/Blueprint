@@ -17,16 +17,21 @@ class KeyValuePairComponent extends Component {
 
   render() {
     const { keyPair, value } = this.props;
+    
     const procVal = (val) => {
-      if (Array.isArray(val)){
-        return this.state.isExpanded ? <ObjectExplorerComponent data={val} /> : '[ ... ]'
+      if (Array.isArray(val)) {
+        return this.state.isExpanded ?
+          <ObjectExplorerComponent data={val} /> :
+          '[ ... ]'
       }
       else if (typeof val === 'object')
-        return this.state.isExpanded ? <ObjectExplorerComponent data={val} /> : '{ ... }'
+        return this.state.isExpanded ?
+          <ObjectExplorerComponent data={val} /> :
+          '{ ... }'
       else
         return JSON.stringify(val)
     }
-    
+
     const style = {
       'margin-left': '16px',
       'position': 'relative',
