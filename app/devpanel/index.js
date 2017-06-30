@@ -15,7 +15,7 @@ const Container = () => (
 
 render(
   <Container />
-, document.getElementById('root')
+  , document.getElementById('root')
 );
 
 if (module.hot && module.hot.accept('../containers/main', () => {

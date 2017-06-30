@@ -1,7 +1,26 @@
+console.log('background loaded!!!!!!!!!!!!!');
+
 var connections = {};
 
+chrome.runtime.onConnect.addListener(function (devToolsConnection) {
+  console.log('connected to background!');
+  // assign the listener function to a variable so we can remove it later
+  var devToolsListener = function (message, sender, sendResponse) {
+    // Inject a content script into the identified tab
+    console.log('injecting into tab: ', message);
+    chrome.tabs.executeScript(message.tabId,
+      { file: message.scriptToInject });
+  }
+  // add the listener
+  devToolsConnection.onMessage.addListener(devToolsListener);
+
+  devToolsConnection.onDisconnect.addListener(function () {
+    devToolsConnection.onMessage.removeListener(devToolsListener);
+  });
+});
+
 chrome.runtime.onConnect.addListener(function (port) {
-  console.log('bg listening for messages');
+  console.log('------- bg listening for messages ------');
   var extensionListener = function (message, sender, sendResponse) {
 
     // The original connection event doesn't include the tab ID of the
@@ -43,9 +62,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (sender.tab) {
     var tabId = sender.tab.id;
     if (tabId in connections) {
+      console.log('Posting message to: ', connections[tabId]);
       connections[tabId].postMessage(request);
     } else {
-      console.log("Tab not found in connection list.");
+      console.log("Tab not found in connection list.", connections);
     }
   } else {
     console.log("sender.tab not defined.");
