@@ -1,3 +1,5 @@
+console.log('content-script loaded!');
+
 window.addEventListener('message', function (event) {
   // Only accept messages from the same frame
   if (event.source !== window) {
@@ -11,6 +13,9 @@ window.addEventListener('message', function (event) {
     !message.source === 'ngPulse') {
     return;
   }
-  
+
+  console.log('sending message:  ', message);
   chrome.runtime.sendMessage(message);
 });
+
+const contentScript = {};
