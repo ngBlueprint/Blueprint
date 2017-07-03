@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import SubComponent from './sub-component.js'
 import ObjectExplorerComponent from './objectExplorer-component.js';
-// import NodeExplorer from '../utils/nodeExplorer.js'
+import ComponentExplorerComponent from './componentExplorer-component.js';
+
+import NodeExplorer from '../utils/nodeExplorer.js'
 
 class MainComponent extends Component {
   constructor(props) {
@@ -22,11 +24,8 @@ class MainComponent extends Component {
       name: 'init',
       tabId: chrome.devtools.inspectedWindow.tabId,
     });
-    alert('in react main.js!!')
+    alert('in react main.js!')
 
-
-
-    // 
     backgroundPageConnection.onMessage.addListener(this.onConnect)
 
     backgroundPageConnection.onMessage.addListener((message) => {
@@ -39,27 +38,11 @@ class MainComponent extends Component {
 
       // alert('new state: ' + JSON.stringify(this.state.data));
     });
+
+    this.refreshComponents();
   }
 
   refreshComponents() {
-    // alert('refresh!');
-    // alert('state: ' + this.state);
-    // chrome.devtools.inspectedWindow.eval(
-    //   "window.ng.probe(window.getAllAngularRootElements()[0]).context.title",
-
-    //   (result, isException) => {
-    //     alert('eval start!');
-    //     if (isException)
-    //       alert("ng not found!");
-    //     else {
-    //       const strResult = JSON.stringify(result);
-    //       // alert('ngRoot : ' + strResult);
-    //       this.setState({ ngRootNode: strResult });
-    //       // alert('new state: ' + this.state);
-    //     }
-    //     alert('eval end!');
-    //   }
-    // );
     chrome.devtools.inspectedWindow.eval(
       `
       if(typeof ngProbe === 'undefined') {
@@ -72,19 +55,21 @@ class MainComponent extends Component {
         //   console.log('Angular did some work (STABLE'); 
         //   window.postMessage({data: getContext(ngProbe), type:"message"},'*');
         // });
-        ngZone.onUnstable.subscribe(function() { 
-          // console.log('Angular did some work (UNSTABLE'); 
+        ngZone.onStable.subscribe(function() { 
+          // alert('Angular did some work (UNSTABLE'); 
+          
           window.postMessage({data: getContext(ngProbe), type:"message"},'*');
         });
 
         console.log('done');
       }
       else{
-        ngProbe = window.ng.probe(window.getAllAngularRootElements()[0]);
-        appRef = ngProbe.injector.get(window.ng.coreTokens.ApplicationRef);
-        ngZone = ngProbe.injector.get(window.ng.coreTokens.NgZone);
+        // ngProbe = window.ng.probe(window.getAllAngularRootElements()[0]);
+        // appRef = ngProbe.injector.get(window.ng.coreTokens.ApplicationRef);
+        // ngZone = ngProbe.injector.get(window.ng.coreTokens.NgZone);
       }
-        
+                  window.postMessage({data: getContext(ngProbe), type:"message"},'*');
+
 
       function getContext(ele, contexts = {}){
         if(typeof ele.nativeElement !== 'undefined'){
@@ -150,10 +135,10 @@ class MainComponent extends Component {
           // alert('new state: ' + this.state);
           // parseComponents(result);
         }
-        // alert('eval end!');
       }
     );
   }
+  
 
   parseComponents(node, componentList = []) {
     // IGF NgIfContext drill down for state (hero detail view)
@@ -165,8 +150,6 @@ class MainComponent extends Component {
       componentList.push(name);
       componentTree[name] = {};
       componentTree[name].state = processContext(node.context);
-
-
 
       if (typeof node.childNodes !== 'undefined') {
         componentTree[name].children = {};
@@ -197,41 +180,23 @@ class MainComponent extends Component {
       return obj;
     }
 
-
-
   }
 
   render() {
-    const mockData = {
-      title: 'heroes',
-      selectedHero: {
-        id: 0,
-        name: 'Superman'
-      },
-      heroes: [{
-        id: 0,
-        name: 'Superman'
-      }, {
-        id: 1,
-        name: 'Spiderman'
-      }]
-    }
-
-
-
     return (
       <div style={styles.splitPane}>
         <div style={styles.splitPaneLeft}>
           <h1>Component List</h1>
           <hr />
           <hr />
+          <ObjectExplorerComponent data={this.state.raw} />
           <br />
-          <button onClick={this.refreshComponents}>Refresh Components</button>
+          {/*<button onClick={this.refreshComponents}>Refresh Components</button>*/}
         </div>
         <div style={styles.splitPaneRight}>
           {/*<ObjectExplorerComponent data={this.props.data} />*/}
-          <ObjectExplorerComponent data={this.state.components} />
-          <ObjectExplorerComponent data={this.state.raw} />
+          
+          <ComponentExplorerComponent data={this.state.components} />
 
         </div>
       </div>
