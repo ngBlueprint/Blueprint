@@ -1,2 +1,2 @@
-# Blueprint
+# ngPulse
 Debugging made easier
