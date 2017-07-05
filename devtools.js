@@ -1,7 +1,7 @@
 // console.log('devtools loaded!');
 // const test = {};
 
-chrome.devtools.panels.create('Blueprint',
+chrome.devtools.panels.create('ngPulse',
   null,
   'devpanel.html',
   function (panel) {
