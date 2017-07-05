@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import SubComponent from './sub-component.js'
 import ObjectExplorerComponent from './objectExplorer-component.js';
-import ComponentExplorerComponent from './componentExplorer-component.js';
-
+import ComponentsContainerComponent from './componentsContainer-component.js';
+import { List, ListItem } from 'material-ui/List';
 import NodeExplorer from '../utils/nodeExplorer.js'
+import Subheader from 'material-ui/Subheader';
+import Toggle from 'material-ui/Toggle';
 
 class MainComponent extends Component {
   constructor(props) {
@@ -13,7 +15,11 @@ class MainComponent extends Component {
     this.refreshComponents = this.refreshComponents.bind(this);
     this.state = {
       raw: '',
-      components: ''
+      components: '',
+      componentsArray: [],
+      componentList: [],
+      serviceList: [],
+      selectedElement: 'Show All',
     }
 
     // create a connection to the background page
@@ -24,7 +30,7 @@ class MainComponent extends Component {
       name: 'init',
       tabId: chrome.devtools.inspectedWindow.tabId,
     });
-    alert('in react main.js!')
+    // alert('in react main.js!')
 
     backgroundPageConnection.onMessage.addListener(this.onConnect)
 
@@ -32,7 +38,12 @@ class MainComponent extends Component {
       // Handle responses from the background page, if any
       // alert('message received: ' + JSON.stringify(message));
       // alert('old state' + JSON.stringify(this.state));
-      this.setState({ raw: message.data, components: this.parseComponents(message.data) });
+      const components = this.parseComponents(message.data);
+      this.setState({
+        raw: message.data,
+        components: components,
+        componentsArray: this.createComponentsArray(components),
+      });
       // this.parseComponents(message.data);
       // alert('new state' + JSON.stringify(this.state));
 
@@ -41,6 +52,19 @@ class MainComponent extends Component {
 
     this.refreshComponents();
   }
+
+  //componentInstance (HeroDetailComponent)
+  // hero: Object
+  // heroSerivce: HeroService
+
+  // ngProbe.childNodes[6].componentInstance
+  // ngProbe.childNodes[6].componentInstance.constructor.name
+  // "HeroDetailComponent"
+  // ngProbe.childNodes[6].componentInstance.hero.constructor.name
+  // "Object"
+  // ngProbe.childNodes[6].componentInstance.heroService.constructor.name
+  // "HeroService"
+
 
   refreshComponents() {
     chrome.devtools.inspectedWindow.eval(
@@ -68,14 +92,18 @@ class MainComponent extends Component {
         // appRef = ngProbe.injector.get(window.ng.coreTokens.ApplicationRef);
         // ngZone = ngProbe.injector.get(window.ng.coreTokens.NgZone);
       }
-                  window.postMessage({data: getContext(ngProbe), type:"message"},'*');
 
+      window.postMessage({data: getContext(ngProbe), type:"message"},'*');
 
       function getContext(ele, contexts = {}){
         if(typeof ele.nativeElement !== 'undefined'){
           var node = {}
 
           node.name = ele.name;
+
+          node.innerHTML = ele.nativeElement.innerHTML;
+          node.innerText = ele.nativeElement.innerText;
+
           node.context = processContext(ele.componentInstance);
 
           if(ele.childNodes) {
@@ -93,15 +121,40 @@ class MainComponent extends Component {
         return node;
       }
 
-      function processContext(context){
+      function processContext(context, processParent = true){
         var obj = {};
 
-        obj.parentComponent = context.constructor.name;
+        // obj.parentComponent = '';
+
+        if(processParent)
+          obj.parentComponent = context.constructor.name;
 
         for(var prop in context) {
-          if(Array.isArray(context[prop]))
+          if(Array.isArray(context[prop])){
             obj[prop] = context[prop];
-          if(prop !== '__proto__' 
+          } else if (typeof context[prop] === 'function') {
+            // obj[prop] = context[prop].toString();
+          } else if (typeof context[prop] === 'object') {
+            var object = context[prop];
+            var constructor = object.constructor.name;
+            // obj[prop] = 'OBJECT';
+
+            switch(constructor) {
+              case 'Router':
+              case 'parentComponent':
+              case 'Subject':
+              case 'AnonymousSubject':
+                break;
+              default:
+                if (constructor.includes('Service')){
+                  obj[prop] = parseService(object);
+                }
+                else{
+                  obj[prop] = object;
+                }
+                break;
+            }
+          } else if(prop !== '__proto__' 
           && typeof context[prop] !== 'function' 
           && typeof context[prop] !== 'object'
           // && prop !== 'router'
@@ -110,7 +163,35 @@ class MainComponent extends Component {
         }
 
         return obj;
-      }      
+      }
+
+      function parseService(object) {
+        // var obj = {};
+
+        // obj.service = 'yes';
+
+        // return obj;
+        // if(object.__proto__)
+        //   return object.__proto__;
+        // else
+        //   return 'no name'
+        return parseObject(object.__proto__, ['constructor', '__proto__']);
+      }
+
+      function parseObject(object, ignoreKeys = []) {
+        var obj = {};
+
+        for(var key in object) {
+          if(ignoreKeys.indexOf(key) === -1){
+            if (typeof object[key] === 'function') {
+              obj[key] = object[key].toString();
+              // obj[key] = 'func';
+            }
+          }
+        }
+
+        return obj;
+      }
       `,
 
       //name:ele
@@ -122,7 +203,7 @@ class MainComponent extends Component {
         if (isException)
           alert('exception thrown! ' + JSON.stringify(isException));
         else {
-          alert('eval ran!');
+          // alert('eval ran!');
           // const strResult = JSON.stringify(result);
           // // alert('ngRoot : ' + strResult);
           // const comps = this.parseComponents(result);
@@ -138,16 +219,90 @@ class MainComponent extends Component {
       }
     );
   }
-  
+
+  createComponentsArray(componentTree) {
+    const components = [];
+
+    for (var key in componentTree) {
+      const comp = componentTree[key];
+      comp.name = key;
+      components.push(comp);
+
+      for (var childName in componentTree.children) {
+        components.concat(createComponentsArray(componentTree.children[childName]));
+      }
+    }
+
+    return components;
+  }
+
+  createServicesArray() {
+
+  }
 
   parseComponents(node, componentList = []) {
     // IGF NgIfContext drill down for state (hero detail view)
     //Use component instance??
     const name = node.context.parentComponent;
     // componentTree.name = name;
+
+
+    const processContext = (context) => {
+      var obj = {};
+      for (var prop in context) {
+        if (Array.isArray(context[prop])) {
+          obj[prop] = context[prop];
+        } else if (typeof context[prop] === 'function') {
+          // obj[prop] = context[prop].toString();
+        } else if (typeof context[prop] === 'object') {
+          var object = context[prop];
+          var constructor = object.constructor.name;
+          // obj[prop] = 'OBJECT';
+
+          switch (constructor) {
+            case 'Router':
+            case 'parentComponent':
+              break;
+            default:
+              if (prop.includes('Service')) {
+                obj[prop] = object;
+                // obj[prop] = 'SERVICE';
+                const oldServiceList = this.state.serviceList;
+                if (oldServiceList.indexOf(prop) === -1)
+                  oldServiceList.push(prop);
+                this.setState({ serviceList: oldServiceList });
+              }
+              else {
+                // alert(JSON.stringify(processContext(object,false)));
+                // obj[prop] = processContext(object, false);
+                // obj[prop] = JSON.stringify(object);
+                obj[prop] = object;
+              }
+              break;
+          }
+        } else if (prop !== '__proto__'
+          && typeof context[prop] !== 'function'
+          && typeof context[prop] !== 'object'
+          && prop !== 'parentComponent'
+          // && prop !== 'router'
+        )
+          obj[prop] = context[prop];
+        // if (Array.isArray(context[prop]))
+        //   obj[prop] = context[prop];
+        // if (prop !== '__proto__' &&
+        //   typeof context[prop] !== 'function' &&
+        //   typeof context[prop] !== 'object' &&
+        //   prop !== 'parentComponent')
+        //   obj[prop] = context[prop];
+      }
+
+      return obj;
+    }
+
     if (componentList.indexOf(name) === -1) {
       const componentTree = {};
       componentList.push(name);
+      this.setState({ componentList: componentList });
       componentTree[name] = {};
       componentTree[name].state = processContext(node.context);
 
@@ -165,38 +320,79 @@ class MainComponent extends Component {
       return componentTree;
     }
 
-    function processContext(context) {
-      var obj = {};
-      for (var prop in context) {
-        if (Array.isArray(context[prop]))
-          obj[prop] = context[prop];
-        if (prop !== '__proto__' &&
-          typeof context[prop] !== 'function' &&
-          typeof context[prop] !== 'object' &&
-          prop !== 'parentComponent')
-          obj[prop] = context[prop];
-      }
-
-      return obj;
-    }
-
   }
 
   render() {
+
+    const componentListItems = this.state.componentList.map((curr, index) => {
+      return <ListItem
+        key={index}
+        primaryText={curr}
+      />
+    });
+    /*[
+    <ListItem
+      key={1}
+      primaryText="Starred"
+
+    />,
+    <ListItem
+      key={2}
+      primaryText="Sent Mail"
+      disabled={true}
+      nestedItems={[
+        <ListItem key={1} primaryText="Drafts" />,
+      ]}
+    />,
+    <ListItem
+      key={3}
+      primaryText="Inbox"
+      open={this.state.open}
+      onNestedListToggle={this.handleNestedListToggle}
+      nestedItems={[
+        <ListItem key={1} primaryText="Drafts" />,
+      ]}
+    />,
+  ];*/
+    const serviceListItems = this.state.serviceList.map((curr, index) => {
+      return <ListItem
+        key={index}
+        primaryText={curr}
+      />
+    });
+
     return (
       <div style={styles.splitPane}>
         <div style={styles.splitPaneLeft}>
-          <h1>Component List</h1>
-          <hr />
-          <hr />
+          {/*<h1>Angular Items</h1>*/}
+          <List>
+            {/*<Subheader>Nested List Items</Subheader>*/}
+            <ListItem
+              primaryText="Show All"
+            />
+            <ListItem
+              primaryText="Components"
+              initiallyOpen={true}
+              primaryTogglesNestedList={true}
+              nestedItems={componentListItems}
+            />
+            <ListItem
+              primaryText="Services"
+              initiallyOpen={true}
+              primaryTogglesNestedList={true}
+              nestedItems={serviceListItems}
+            />
+          </List>
+          {/*<ObjectExplorerComponent data={this.state.components} />*/}
+
           <ObjectExplorerComponent data={this.state.raw} />
           <br />
           {/*<button onClick={this.refreshComponents}>Refresh Components</button>*/}
         </div>
         <div style={styles.splitPaneRight}>
           {/*<ObjectExplorerComponent data={this.props.data} />*/}
-          
-          <ComponentExplorerComponent data={this.state.components} />
+
+          <ComponentsContainerComponent data={this.state.components} />
 
         </div>
       </div>
@@ -227,7 +423,7 @@ const styles = {
   splitPane: {
     width: '100%',
     height: '100%',
-    minHeight: '700px',
+    // minHeight: '700px',
     background: ''
   },
   splitPaneLeft: {
@@ -237,8 +433,8 @@ const styles = {
     height: '100%',
     minHeight: '700px',
     background: '#FFFFFF',
-    border: '3px solid #DDDDDD',
-    paddingLeft: '10px'
+    // border: '3px solid #DDDDDD',
+    // paddingLeft: '10px'
   },
   splitPaneRight: {
     display: 'block',
@@ -247,7 +443,7 @@ const styles = {
     height: '100%',
     minHeight: '700px',
     background: '#FFFFFFF',
-    border: '3px solid #DDDDDD',
+    // border: '3px solid #DDDDDD',
     paddingLeft: '10px'
   },
 };
