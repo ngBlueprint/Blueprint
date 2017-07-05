@@ -6,11 +6,19 @@ import { createStore } from 'redux';
 import Main from '../containers/main';
 import 'react-hot-loader/patch';
 import { AppContainer } from 'react-hot-loader';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
 
 const Container = () => (
-  <AppContainer>
-    <Main />
-  </AppContainer>
+  <MuiThemeProvider>
+    <AppContainer>
+      <Main />
+    </AppContainer>
+  </MuiThemeProvider>
 );
 
 render(
