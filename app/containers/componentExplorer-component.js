@@ -21,6 +21,22 @@ class ComponentExplorerComponent extends Component {
           color: 'red',
           margin: '0',
         },
+      arrowRight: {
+        'border': 'solid black',
+        'border-width': '0 2px 2px 0',
+        'display': 'inline-block',
+        'padding': '2px',
+        'transform': 'rotate(45deg)',
+        '-webkit-transform': 'rotate(45deg)',
+      },
+      arrowDown: {
+        'border': 'solid black',
+        'border-width': '0 2px 2px 0',
+        'display': 'inline-block',
+        'padding': '2px',
+        'transform': 'rotate(-45deg) translateY(-3px)',
+        '-webkit-transform': 'rotate(-45deg) translateY(-3px)',
+      },
 
         // color: 'red',
         border: 'solid 1px black',
@@ -52,14 +68,14 @@ class ComponentExplorerComponent extends Component {
         <div >
           <Card
             expanded={true}
-style={styles.card}
+            style={styles.card}
           >
             <CardHeader
               title={componentName}
               //subtitle="Subtitle"
 
               actAsExpander={true}
-              showExpandableButton={true}
+              showExpandableButton={false}
             />
             <CardText expandable={true}>
               {propItems}
