@@ -7,6 +7,8 @@ import { List, ListItem } from 'material-ui/List';
 import NodeExplorer from '../utils/nodeExplorer.js'
 import Subheader from 'material-ui/Subheader';
 import Toggle from 'material-ui/Toggle';
+import AppBar from 'material-ui/AppBar';
+import Paper from 'material-ui/Paper';
 
 class MainComponent extends Component {
   constructor(props) {
@@ -15,7 +17,6 @@ class MainComponent extends Component {
     this.refreshComponents = this.refreshComponents.bind(this);
     this.state = {
       raw: '',
-      components: '',
       componentsArray: [],
       componentList: [],
       serviceList: [],
@@ -42,7 +43,7 @@ class MainComponent extends Component {
       this.setState({
         raw: message.data,
         components: components,
-        componentsArray: this.createComponentsArray(components),
+
       });
       // this.parseComponents(message.data);
       // alert('new state' + JSON.stringify(this.state));
@@ -220,26 +221,6 @@ class MainComponent extends Component {
     );
   }
 
-  createComponentsArray(componentTree) {
-    const components = [];
-
-    for (var key in componentTree) {
-      const comp = componentTree[key];
-      comp.name = key;
-      components.push(comp);
-
-      for (var childName in componentTree.children) {
-        components.concat(createComponentsArray(componentTree.children[childName]));
-      }
-    }
-
-    return components;
-  }
-
-  createServicesArray() {
-
-  }
-
   parseComponents(node, componentList = []) {
     // IGF NgIfContext drill down for state (hero detail view)
     //Use component instance??
@@ -321,6 +302,11 @@ class MainComponent extends Component {
     }
 
   }
+  
+  getComponent(name) {
+    return name;
+    // return this.state.components.hasOwnProperty(name.replace(' ', ''));
+  }
 
   render() {
 
@@ -328,74 +314,77 @@ class MainComponent extends Component {
       return <ListItem
         key={index}
         primaryText={curr}
+        style={curr === this.state.selectedElement ? styles.listItem : null}
+        onTouchTap={() => this.setState({ selectedElement: curr })}
       />
     });
-    /*[
-    <ListItem
-      key={1}
-      primaryText="Starred"
 
-    />,
-    <ListItem
-      key={2}
-      primaryText="Sent Mail"
-      disabled={true}
-      nestedItems={[
-        <ListItem key={1} primaryText="Drafts" />,
-      ]}
-    />,
-    <ListItem
-      key={3}
-      primaryText="Inbox"
-      open={this.state.open}
-      onNestedListToggle={this.handleNestedListToggle}
-      nestedItems={[
-        <ListItem key={1} primaryText="Drafts" />,
-      ]}
-    />,
-  ];*/
     const serviceListItems = this.state.serviceList.map((curr, index) => {
       return <ListItem
         key={index}
         primaryText={curr}
+        style={curr === this.state.selectedElement ? styles.listItem : null}
+        onTouchTap={() => this.setState({ selectedElement: curr })}
       />
     });
 
     return (
-      <div style={styles.splitPane}>
-        <div style={styles.splitPaneLeft}>
-          {/*<h1>Angular Items</h1>*/}
-          <List>
-            {/*<Subheader>Nested List Items</Subheader>*/}
-            <ListItem
-              primaryText="Show All"
-            />
-            <ListItem
-              primaryText="Components"
-              initiallyOpen={true}
-              primaryTogglesNestedList={true}
-              nestedItems={componentListItems}
-            />
-            <ListItem
-              primaryText="Services"
-              initiallyOpen={true}
-              primaryTogglesNestedList={true}
-              nestedItems={serviceListItems}
-            />
-          </List>
-          {/*<ObjectExplorerComponent data={this.state.components} />*/}
+      <Paper style={styles.container} zDepth={1} rounded={false}>
+        {/*<AppBar
+          title="ngPulse"
+          style={{ 
+            'height': '2rem',
+            'padding': '0' 
+            }}
+          titleStyle={{ 
+            //'height': '0.6rem', 
+            'margin': '0',
+            padding: '0',
+            top: '0',
+            position: 'relative',
+            }}
+          showMenuIconButton={false}
+        />*/}
+        {/*<Paper style={styles.container} zDepth={1} rounded={false} />*/}
+        <div style={styles.splitPane}>
+          <div style={styles.splitPaneLeft}>
+            {/*<h1>Angular Items</h1>*/}
+            <List>
+              {/*<Subheader>Nested List Items</Subheader>*/}
+              <ListItem
+                primaryText="Show All"
+                style={'Show All' === this.state.selectedElement ? styles.listItem : null}
+                onTouchTap={() => this.setState({ selectedElement: 'Show All' })}
+              />
+              <ListItem
+                primaryText="Components"
+                initiallyOpen={true}
+                primaryTogglesNestedList={true}
+                nestedItems={componentListItems}
+              />
+              <ListItem
+                primaryText="Services"
+                initiallyOpen={true}
+                primaryTogglesNestedList={true}
+                nestedItems={serviceListItems}
+              />
+            </List>
+            {/*<ObjectExplorerComponent data={this.state.components} />*/}
 
-          <ObjectExplorerComponent data={this.state.raw} />
-          <br />
-          {/*<button onClick={this.refreshComponents}>Refresh Components</button>*/}
+            {/*<ObjectExplorerComponent data={this.state.raw} />*/}
+            <br />
+            {/*<button onClick={this.refreshComponents}>Refresh Components</button>*/}
+          </div>
+          <div style={styles.splitPaneRight}>
+            {/*<ObjectExplorerComponent data={this.props.data} />*/}
+
+            <ComponentsContainerComponent data={this.state.components} />
+            Component Selected: 
+            {/*{this.getComponent(this.state.selectedElement)}*/}
+            {/*{JSON.stringify(this.state.components['AppComponent'])}*/}
+          </div>
         </div>
-        <div style={styles.splitPaneRight}>
-          {/*<ObjectExplorerComponent data={this.props.data} />*/}
-
-          <ComponentsContainerComponent data={this.state.components} />
-
-        </div>
-      </div>
+      </Paper>
     )
     /*const comps = ['heroesComponent', 'dashBoardComponent', 'watcherComponent'];
     const compsCollection = [];
@@ -420,6 +409,17 @@ class MainComponent extends Component {
 }
 
 const styles = {
+  container: {
+    'height': '100%',
+    'width': '100%',
+    margin: 4,
+    // textAlign: 'center',
+    display: 'block',
+  },
+  listItem: {
+    'color': 'black',
+    'font-weight': 'bold',
+  },
   splitPane: {
     width: '100%',
     height: '100%',
