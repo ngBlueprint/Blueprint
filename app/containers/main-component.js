@@ -383,6 +383,7 @@ class MainComponent extends Component {
             {/*{this.getComponent(this.state.selectedElement)}*/}
             {/*{JSON.stringify(this.state.components['AppComponent'])}*/}
           </div>
+
         </div>
       </Paper>
     )
