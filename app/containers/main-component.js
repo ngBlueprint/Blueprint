@@ -372,14 +372,14 @@ class MainComponent extends Component {
             />
             <ListItem
               primaryText="Components"
-              initiallyOpen={true}
-              primaryTogglesNestedList={true}
+              initiallyOpen={false}
+              primaryTogglesNestedList={false}
               nestedItems={componentListItems}
             />
             <ListItem
               primaryText="Services"
-              initiallyOpen={true}
-              primaryTogglesNestedList={true}
+              initiallyOpen={false}
+              primaryTogglesNestedList={false}
               nestedItems={serviceListItems}
             />
           </List>
